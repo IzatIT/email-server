@@ -1,0 +1,77 @@
+sudo apt update
+sudo apt install postfix
+
+CONFIGURATION: /etc/postfix/main.cf
+
+//myhostname = mail.[domain]
+//mydomain = [domain]
+//myorigin = $mydomain
+//inet_interfaces = all
+//mydestination = $myhostname, $mydomain, localhost
+//relayhost =
+//mailbox_command =
+//mailbox_size_limit = 0
+//recipient_delimiter = +
+
+
+
+sudo systemctl restart postfix
+
+
+
+sudo apt install dovecot-core dovecot-imapd dovecot-pop3d
+
+
+//protocols = imap pop3
+//mail_location = maildir:~/Maildir
+
+
+
+sudo systemctl restart dovecot
+
+
+sudo apt install certbot
+sudo certbot certonly --standalone -d mail.vent-fix.kg
+
+
+sudo ufw allow 22/tcp
+sudo ufw allow 25/tcp
+sudo ufw allow 587/tcp
+sudo ufw allow 993/tcp
+sudo ufw enable
+
+
+sudo tail -f /var/log/mail.log
+
+
+sudo systemctl restart postfix
+
+
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, defer_unauth_destination
+
+
+sudo apt install dovecot-core dovecot-imapd
+
+
+sudo nano /etc/dovecot/dovecot.conf
+
+protocols = imap
+mail_location = maildir:~/Maildir
+
+sudo ufw allow 993/tcp
+
+sudo systemctl restart dovecot
+
+sudo nano /etc/postfix/main.cf
+
+smtpd_tls_cert_file = /etc/letsencrypt/live/mail.vent-fix.kg/fullchain.pem
+smtpd_tls_key_file = /etc/letsencrypt/live/mail.vent-fix.kg/privkey.pem
+smtpd_use_tls = yes
+smtpd_tls_security_level = may
+
+
+sudo systemctl restart postfix
+
+
+sudo useradd -m ntoksonov
+sudo passwd ntoksonov
