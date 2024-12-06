@@ -73,5 +73,16 @@ smtpd_tls_security_level = may
 sudo systemctl restart postfix
 
 
-sudo useradd -m ntoksonov
-sudo passwd ntoksonov
+sudo useradd -m [username]
+sudo passwd [username]
+
+su - [username]
+$ mail (incoming messages)
+
+echo -e "(text of message)" | sendmail -v [email-address]
+with mailutils
+echo "(text of message)" | mail -s "(Title of message)" [email-address]
+
+
+
+
